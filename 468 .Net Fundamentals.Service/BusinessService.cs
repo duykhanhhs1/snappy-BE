@@ -21,13 +21,13 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(int projectId, string name)
+        public async Task Create(int projectId, BusinessCreateVM bus)
         {
             try
             {
                 var business = new Business
                 {
-                    Name = name,
+                    Name = bus.Name,
                     ProjectId = projectId
                 };
 
@@ -77,14 +77,14 @@ namespace _468_.Net_Fundamentals.Service
             
         }
 
-        public async Task Update(int id, string name)
+        public async Task Update(int id, BusinessCreateVM bus)
         {
             try
             {
                 await _unitOfWork.BeginTransaction();
 
                 var business = await _unitOfWork.Repository<Business>().FindAsync(id);
-                business.Name = name;
+                business.Name = bus.Name;
 
                 await _unitOfWork.CommitTransaction();
             }

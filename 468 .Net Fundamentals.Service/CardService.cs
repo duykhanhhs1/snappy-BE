@@ -29,7 +29,7 @@ namespace _468_.Net_Fundamentals.Service
         }
 
 
-        public async Task Create(int busId, string name)
+        public async Task Create(int busId, CardCreateVM task)
         {
             try
             {
@@ -43,9 +43,11 @@ namespace _468_.Net_Fundamentals.Service
                     .Where(_ => _.Id == busId)
                     .Select(bus => new Card
                     {
-                        Name = name,
+                        Name = task.Name,
+                        Description = task.Description,
+                        Duedate = task.Duedate,
                         BusinessId = bus.Id,
-                        Index = bus.Cards.Count != 0 ? bus.Cards.Max(c => c.Index) + 1 : 1,
+                        Index = 1,
                         Priority = TaskPriority.Normal,
                         CreatedOn = DateTime.Now
                     })
@@ -223,7 +225,7 @@ namespace _468_.Net_Fundamentals.Service
 
         }
 
-        public async Task UpdateName(int id, [FromBody] string newName)
+        public async Task UpdateName(int id, [FromBody] CardNameVM newName)
         {
             try
             {
@@ -235,7 +237,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
-                if (card.Name == newName) return;
+                if (card.Name == newName.Name) return;
 
                 // Save history
                 var activity = new Activity
@@ -244,13 +246,13 @@ namespace _468_.Net_Fundamentals.Service
                     UserId = currentUserId,
                     Action = AcctionEnumType.UpdateName,
                     PreviousValue = card.Name,
-                    CurrentValue = newName,
+                    CurrentValue = newName.Name,
                     OnDate = DateTime.Now
                 };
                 await _unitOfWork.Repository<Activity>().InsertAsync(activity);
 
                 // Update Name
-                card.Name = newName;
+                card.Name = newName.Name;
 
 
                 await _unitOfWork.CommitTransaction();
@@ -304,7 +306,7 @@ namespace _468_.Net_Fundamentals.Service
 
         }
 
-        public async Task UpdateDescription(int id, [FromBody] string newDescription)
+        public async Task UpdateDescription(int id, [FromBody] CardDescriptionVM newDescription)
         {
             try
             {
@@ -314,7 +316,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
-                if (card.Description == newDescription) return;
+                if (card.Description == newDescription.Description) return;
 
                 // Save history
                 var activity = new Activity
@@ -323,12 +325,12 @@ namespace _468_.Net_Fundamentals.Service
                     UserId = currentUserId,
                     Action = AcctionEnumType.UpdateDescription,
                     PreviousValue = card.Description,
-                    CurrentValue = newDescription,
+                    CurrentValue = newDescription.Description,
                     OnDate = DateTime.Now
                 };
 
                 // Update description
-                card.Description = newDescription;
+                card.Description = newDescription.Description;
 
                 await _unitOfWork.Repository<Activity>().InsertAsync(activity);
                 await _unitOfWork.CommitTransaction();
@@ -341,7 +343,7 @@ namespace _468_.Net_Fundamentals.Service
 
         }
 
-        public async Task UpdateDuedate(int id, [FromBody] string newDuedate)
+        public async Task UpdateDuedate(int id, [FromBody] CardDueDateVM newDuedate)
         {
             try
             {
@@ -358,13 +360,13 @@ namespace _468_.Net_Fundamentals.Service
                     UserId = currentUserId,
                     Action = AcctionEnumType.UpdateDuedate,
                     PreviousValue = card.Duedate.ToString(),
-                    CurrentValue = DateTime.Parse(newDuedate).ToString(),
+                    CurrentValue = DateTime.Parse(newDuedate.Duedate).ToString(),
                     OnDate = DateTime.Now
                 };
 
 
                 // Update duedate
-                card.Duedate = DateTime.Parse(newDuedate);
+                card.Duedate = DateTime.Parse(newDuedate.Duedate);
 
                 await _unitOfWork.Repository<Activity>().InsertAsync(activity);
                 await _unitOfWork.CommitTransaction();

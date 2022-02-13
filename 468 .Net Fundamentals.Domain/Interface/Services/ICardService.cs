@@ -11,17 +11,17 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface ICardService
     {
-        public Task Create(int busId, string name);
+        public Task Create(int busId, CardCreateVM name);
         public Task<IList<CardVM>> GetAllByBusiness(int busId);
         public Task<CardVM> GetDetail(int id);
         public Task Delete(int id);
 
         public Task CardMovement(int id, CardMovementVM data);
 
-        public Task UpdateName(int id, string newName);
+        public Task UpdateName(int id, CardNameVM newName);
         public Task UpdatePriority(int id, TaskPriority newPriority);
-        public Task UpdateDescription(int id, string newDescription);
-        public Task UpdateDuedate(int id, string newDuedate);
+        public Task UpdateDescription(int id, CardDescriptionVM newDescription);
+        public Task UpdateDuedate(int id, CardDueDateVM newDuedate);
 
     }
 }

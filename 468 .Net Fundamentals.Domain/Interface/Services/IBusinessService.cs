@@ -9,9 +9,9 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     public interface IBusinessService
     {
         // Business
-        public Task Create(int projectId, string name);
+        public Task Create(int projectId, BusinessCreateVM bus);
         public Task<IList<BusinessVM>> GetAllByProject(int projectId);
-        public Task Update(int id, string name);
+        public Task Update(int id, BusinessCreateVM name);
         public Task Delete(int id);
     }
 }

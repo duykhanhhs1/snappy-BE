@@ -20,9 +20,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost]
-        public async Task Create(int projectId, [FromBody] string name)
+        public async Task Create(int projectId, [FromBody] BusinessCreateVM bus)
         {
-            await _businessService.Create(projectId, name);
+            await _businessService.Create(projectId, bus);
         }
 
         [HttpGet]
@@ -34,9 +34,9 @@ namespace _468_.Net_Fundamentals.Controllers
 
         [Route("{id}")]
         [HttpPut]
-        public async Task Update(int id, [FromBody] string name)
+        public async Task Update(int id, [FromBody] BusinessCreateVM bus)
         {
-            await _businessService.Update(id, name);
+            await _businessService.Update(id, bus);
         }
 
         [Route("{id}")]

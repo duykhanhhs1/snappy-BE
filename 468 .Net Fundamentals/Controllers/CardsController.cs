@@ -21,7 +21,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost("/api/business/{busId}/cards")]
-        public async Task Create(int busId, [FromBody] string name)
+        public async Task Create(int busId, [FromBody] CardCreateVM name)
         {
             await _cardService.Create(busId, name);
         }
@@ -46,7 +46,7 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPut("{id}/name")]
-        public async Task UpdateName(int id, [FromBody] string newName)
+        public async Task UpdateName(int id, [FromBody] CardNameVM newName)
         {
             await _cardService.UpdateName(id, newName);
         }
@@ -59,13 +59,13 @@ namespace _468_.Net_Fundamentals.Controllers
 
 
         [HttpPut("{id}/description")]
-        public async Task UpdateDescription(int id, [FromBody] string newDescription)
+        public async Task UpdateDescription(int id, [FromBody] CardDescriptionVM newDescription)
         {
             await _cardService.UpdateDescription(id, newDescription);
         }
 
         [HttpPut("{id}/duedate")]
-        public async Task UpdateDuedate(int id, [FromBody] string newDuedate)
+        public async Task UpdateDuedate(int id, [FromBody] CardDueDateVM newDuedate)
         {
             await _cardService.UpdateDuedate(id, newDuedate);
         }
