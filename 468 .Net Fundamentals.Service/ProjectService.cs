@@ -27,8 +27,9 @@ namespace _468_.Net_Fundamentals.Service
             _userManager = userManager;
             _currrentUser = currrentUser;
         }
+        private IBusinessService _businessService;
 
-        public async Task Create(string name)
+        public async Task Create(ProjectCreateVM newProject)
         {
             try
             {
@@ -36,13 +37,18 @@ namespace _468_.Net_Fundamentals.Service
 
                 var project = new Project
                 {
-                    Name = name,
+                    Name = newProject.Name,
                     CreatedBy = currentUserId,
                 };
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
                 await _unitOfWork.SaveChangesAsync();
-            }
+/*                var bus = new BusinessCreateVM
+                {
+                    Name = "Công việc",
+                };
+                await _businessService.Create(project.Id, bus) ;*/
+    }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();

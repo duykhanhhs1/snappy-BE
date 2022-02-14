@@ -9,10 +9,10 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     public interface ITodoService
     {
 
-        public Task Create(int cardId, string name);
+        public Task<int?> Create(int cardId, TodoCreateVM todo);
         public Task<IList<TodoVM>> GetAll(int cardId);
 
-        public Task UpdateName(int id, string name);
+        public Task UpdateName(int id, TodoCreateVM todo);
         public Task UpdateComplete(int id, Boolean status);
 
         public Task Delete(int id);

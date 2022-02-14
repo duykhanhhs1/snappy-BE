@@ -21,7 +21,7 @@ namespace _468_.Net_Fundamentals.Service
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Create(int cardId, string name)
+        public async Task<int?> Create(int cardId, TodoCreateVM newTodo)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 var todo = new Todo
                 {
-                    Name = name,
+                    Name = newTodo.Name,
                     CardId = cardId,
                     IsCompleted = false
                 };
@@ -37,10 +37,13 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.Repository<Todo>().InsertAsync(todo);
                 
                 await _unitOfWork.CommitTransaction();
+
+                return todo.Id;
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
+                return null;
             }
         }
 
@@ -70,13 +73,13 @@ namespace _468_.Net_Fundamentals.Service
             return todoVMs;
         }
 
-        public async Task UpdateName(int id, string name)
+        public async Task UpdateName(int id, TodoCreateVM newTodo)
         {
             try
             {
                 var todo =  await _unitOfWork.Repository<Todo>().FindAsync(id);
 
-                todo.Name = name;
+                todo.Name = newTodo.Name;
 
                 await _unitOfWork.SaveChangesAsync();
             }

@@ -19,9 +19,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost("/api/card/{cardId}/todos")]
-        public async Task Create(int cardId, [FromBody]  string name)
+        public async Task Create(int cardId, [FromBody] TodoCreateVM todo)
         {
-            await _todoService.Create(cardId, name);
+            await _todoService.Create(cardId, todo);
         }
 
         [HttpGet("/api/card/{cardId}/todos")]
@@ -31,9 +31,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
          
         [HttpPut("{id}/name")]
-        public async Task UpdateName(int id, [FromBody] string name)
+        public async Task UpdateName(int id, [FromBody] TodoCreateVM todo)
         {
-            await _todoService.UpdateName(id, name);
+            await _todoService.UpdateName(id, todo);
         }
 
         [HttpPut("{id}/iscompleted")]
