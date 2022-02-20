@@ -62,6 +62,9 @@ namespace _468_.Net_Fundamentals.Infrastructure
 
         public DbSet<Activity> Activities { get; set; }
 
+
+        public DbSet<Comment> Comments { get; set; }
+
         public DbSet<Project> Projects { get; set; }
         public DbSet<Business> Businesses { get; set; }
         public DbSet<Card> Cards { get; set; }

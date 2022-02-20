@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -319,6 +319,30 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    ParentId = table.Column<int>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    UpdatedOn = table.Column<DateTime>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
+                    CardId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comment_Card_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Card",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Todo",
                 columns: table => new
                 {
@@ -358,6 +382,11 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "IX_CardTag_TagId",
                 table: "CardTag",
                 column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_CardId",
+                table: "Comment",
+                column: "CardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Project_CreatedBy",
@@ -424,6 +453,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "CardTag");
+
+            migrationBuilder.DropTable(
+                name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");

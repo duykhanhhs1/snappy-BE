@@ -52,7 +52,8 @@ namespace _468_.Net_Fundamentals.Extensions
                 .AddScoped<IBusinessService, BusinessService>()
                 .AddScoped<IUserService, UserService>()
                 .AddScoped<IActivityService, ActivityService>()
-                .AddScoped<IAccountService, AccountService>();
+                .AddScoped<IAccountService, AccountService>()
+                .AddScoped<ICommentService, CommentService>();
 
         }
 

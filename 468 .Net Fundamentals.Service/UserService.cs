@@ -52,6 +52,24 @@ namespace _468_.Net_Fundamentals.Service
             }
         }
 
+
+        public async Task<UserVM> GetCurrentUser()
+        {
+            var id = _currrentUser?.Id;
+            var userVM = await _unitOfWork.Repository<AppUser>()
+              .Query()
+              .Where(_ => _.Id == id)
+              .Select(u => new UserVM
+              {
+                  Id = u.Id,
+                  UserName = u.UserName,
+                  Email = u.Email,
+                  ImagePath = u.ImagePath
+              }).FirstOrDefaultAsync();
+
+            return userVM;
+        }
+
         public async Task AddCardAssign(int cardId, string userId)
         {
             try

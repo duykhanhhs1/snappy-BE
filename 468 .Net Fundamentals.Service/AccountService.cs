@@ -130,7 +130,6 @@ namespace _468_.Net_Fundamentals.Service
             {
                 UserName = userRegistration.UserName,
                 Email = userRegistration.Email,
-                ImagePath = "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 

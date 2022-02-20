@@ -336,6 +336,38 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.ToTable("CardTag");
                 });
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -519,6 +551,13 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId");
                 });
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>

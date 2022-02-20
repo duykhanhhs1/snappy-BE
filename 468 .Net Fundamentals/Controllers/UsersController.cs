@@ -28,6 +28,11 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _userService.CurrentUser();
         }
 
+        [HttpGet("current")]
+        public async Task<UserVM> GetCurrentUser()
+        {
+            return await _userService.GetCurrentUser();
+        }
 
         [HttpGet]
         public async Task<IList<UserVM>> GetAll()

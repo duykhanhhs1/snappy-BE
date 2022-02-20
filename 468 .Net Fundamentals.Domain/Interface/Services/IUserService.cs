@@ -12,6 +12,8 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
     {
         public Task<IActionResult> CurrentUser();
 
+        public Task<UserVM> GetCurrentUser();
+
         /*public Task Create();*/
         public Task<IList<UserVM>> GetAll();
         public Task<UserVM> Get(string id);
