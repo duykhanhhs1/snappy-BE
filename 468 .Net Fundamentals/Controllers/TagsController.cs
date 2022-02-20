@@ -22,9 +22,9 @@ namespace _468_.Net_Fundamentals.Controllers
 
 
         [HttpPost("/api/project/{projectId}/tags")]
-        public async Task CreateOnProject(int projectId, [FromBody] string name)
+        public async Task CreateOnProject(int projectId, [FromBody] TagCreateVM tag)
         {
-            await _tagService.CreateOnProject(projectId, name);
+            await _tagService.CreateOnProject(projectId, tag);
         }
 
 

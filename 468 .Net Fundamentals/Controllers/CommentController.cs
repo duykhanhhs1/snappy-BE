@@ -27,5 +27,22 @@ namespace _468_.Net_Fundamentals.Controllers
             await _commentService.Create(cardId, comment);
         }
 
+        [HttpGet("/api/card/{cardId}/comments")]
+        public async Task<IList<CommentVM>> GetAll(int cardId)
+        {
+            return await _commentService.GetAll(cardId);
+        }
+
+        [HttpPut("{id}/update")]
+        public async Task Update(int id,[FromBody] CommentCreateVM comment)
+        {
+            await _commentService.Update(id, comment);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task Delete(int id)
+        {
+            await _commentService.Delete(id);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using _468_.Net_Fundamentals.Domain.Entities;
@@ -9,6 +10,7 @@ using _468_.Net_Fundamentals.Domain.Repositories;
 using _468_.Net_Fundamentals.Domain.ViewModels;
 using _468_.Net_Fundamentals.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace _468_.Net_Fundamentals.Service
 {
@@ -25,7 +27,7 @@ namespace _468_.Net_Fundamentals.Service
             _currrentUser = currrentUser;
         }
 
-        public async Task Create(int cardId, CommentCreateVM newComment)
+        public async Task<int?> Create(int cardId, CommentCreateVM newComment)
         {
             try
             {
@@ -34,6 +36,7 @@ namespace _468_.Net_Fundamentals.Service
                 var comment = new Comment
                 {
                     UserId = currentUserId,
+                    ParentId = newComment.ParentId,
                     CardId = cardId,
                     Content = newComment.Content,
                     CreatedOn = DateTime.Now
@@ -41,11 +44,62 @@ namespace _468_.Net_Fundamentals.Service
 
                 await _unitOfWork.Repository<Comment>().InsertAsync(comment);
                 await _unitOfWork.SaveChangesAsync();
+
+                return comment.Id;
             }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
                 throw e;
+            }
+        }
+
+        public async Task<IList<CommentVM>> GetAll(int cardId)
+        {
+            var commentVMs = await _unitOfWork.Repository<Comment>()
+                .Query()
+                .Where(_ => _.CardId == cardId && _.ParentId == null)
+                .Select(comment => new CommentVM
+                {
+                    Id = comment.Id,
+                    ParentId = comment.ParentId,
+                    UserId = comment.UserId,
+                    Content = comment.Content,
+                    CardId = comment.CardId,
+                    CreatedOn = comment.CreatedOn,
+                }).ToListAsync();
+            return commentVMs;
+        }
+
+        public async Task Update(int id, CommentCreateVM newComment)
+        {
+            try
+            {
+                var comment = await _unitOfWork.Repository<Comment>().FindAsync(id);
+
+                comment.Content = newComment.Content;
+                comment.UpdatedOn = DateTime.Now;
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
+            }
+        }
+        public async Task Delete(int id)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+
+                await _unitOfWork.Repository<Comment>().DeleteAsync(id);
+
+                await _unitOfWork.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
             }
         }
     }

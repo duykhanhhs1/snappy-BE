@@ -10,6 +10,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     public class Tag : EntityBase<int>
     {
         public string Name { get; set; }
+        public string ColorCode { get; set; }
 
         public int ProjectId { get; set; }
 

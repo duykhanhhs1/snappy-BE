@@ -7,7 +7,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface ITagService
     {
-        public Task CreateOnProject(int projectId, string name);
+        public Task CreateOnProject(int projectId, TagCreateVM tag);
         public Task<IList<TagVM>> GetAllOnProject(int projectId);
 
         public Task AddCardTag(int cardId, int tagId);

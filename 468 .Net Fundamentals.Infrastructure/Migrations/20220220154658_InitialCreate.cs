@@ -234,6 +234,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
+                    ColorCode = table.Column<string>(nullable: true),
                     ProjectId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -329,7 +330,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     UpdatedOn = table.Column<DateTime>(nullable: true),
                     Content = table.Column<string>(nullable: true),
-                    CardId = table.Column<int>(nullable: true)
+                    CardId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -339,7 +340,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         column: x => x.CardId,
                         principalTable: "Card",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

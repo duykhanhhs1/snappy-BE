@@ -25,7 +25,7 @@ namespace _468_.Net_Fundamentals.Service
             _currrentUser = currrentUser;
         }
 
-        public async Task CreateOnProject(int projectId, string name)
+        public async Task CreateOnProject(int projectId, TagCreateVM newTag)
         {
             try
             {
@@ -33,7 +33,8 @@ namespace _468_.Net_Fundamentals.Service
 
                 var tag = new Tag
                 {
-                    Name = name,
+                    Name = newTag.Name,
+                    ColorCode = newTag.ColorCode,
                     ProjectId = projectId
                 };
               
@@ -54,6 +55,7 @@ namespace _468_.Net_Fundamentals.Service
                 .Select(t => new TagVM {
                     Id = t.Id,
                     Name = t.Name,
+                    ColorCode = t.ColorCode,
                     ProjectId = t.ProjectId
                 }).ToListAsync();
 
