@@ -16,7 +16,6 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
         public Task UpdateComplete(int id, Boolean status);
 
         public Task Delete(int id);
-
-
+        public Task<IList<TodoVM>> GetAllByUser();
     }
 }

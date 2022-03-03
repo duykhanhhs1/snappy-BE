@@ -32,6 +32,12 @@ namespace _468_.Net_Fundamentals.Controllers
             return await _cardService.GetAllByBusiness(busId);
         }
 
+        [HttpGet("/api/cards-by-user")]
+        public async Task<IList<CardVM>> GetAllByUser()
+        {
+            return await _cardService.GetAllByUser();
+        }
+
 
         [HttpGet("{id}")]
         public async Task<CardVM> Get(int id)

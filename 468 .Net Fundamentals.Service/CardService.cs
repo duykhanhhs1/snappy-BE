@@ -105,6 +105,35 @@ namespace _468_.Net_Fundamentals.Service
                 throw e;
             }
 
+        }     
+        
+        public async Task<IList<CardVM>> GetAllByUser()
+        {
+            try
+            {
+                var cardVMs = await _unitOfWork.Repository<Card>()
+                    .Query()
+                    .OrderBy(_ => _.Index)
+                    .Select(card => new CardVM
+                    {
+                        Id = card.Id,
+                        Name = card.Name,
+                        Description = card.Description,
+                        Duedate = card.Duedate,
+                        Priority = card.Priority,
+                        BusinessId = card.BusinessId,
+                        Index = card.Index
+                    })
+                    .ToListAsync();
+
+                return cardVMs;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
         }
 
         public async Task<CardVM> GetDetail(int id)

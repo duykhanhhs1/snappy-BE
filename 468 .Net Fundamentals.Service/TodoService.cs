@@ -71,6 +71,30 @@ namespace _468_.Net_Fundamentals.Service
             }*/
 
             return todoVMs;
+        }       
+        
+        public async Task<IList<TodoVM>> GetAllByUser()
+        {
+
+            var todoVMs = await _unitOfWork.Repository<Todo>()
+                .Query()
+                .Select(todo => new TodoVM {
+                    Id = todo.Id,
+                    IsCompleted = todo.IsCompleted,
+                    Name = todo.Name,
+                    CardId = todo.CardId
+                }).ToListAsync();
+
+            /*var todos = from todo in alltodo where todo.CardId == cardId select todo;
+
+            var todoVMs = new List<TodoVM>();
+
+            foreach (var todo in todos)
+            {
+                todoVMs.Add(new TodoVM { Name = todo.Name, CardId = todo.CardId });
+            }*/
+
+            return todoVMs;
         }
 
         public async Task UpdateName(int id, TodoCreateVM newTodo)

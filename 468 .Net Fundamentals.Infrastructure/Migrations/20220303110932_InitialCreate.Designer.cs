@@ -10,7 +10,7 @@ using _468_.Net_Fundamentals.Infrastructure;
 namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220220154658_InitialCreate")]
+    [Migration("20220303110932_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

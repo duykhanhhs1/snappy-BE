@@ -28,6 +28,13 @@ namespace _468_.Net_Fundamentals.Controllers
         public async Task<IList<TodoVM>> GetAll(int cardId)
         {
             return await _todoService.GetAll(cardId);
+        }       
+        
+        
+        [HttpGet("/api/todos-by-user")]
+        public async Task<IList<TodoVM>> GetAllByUser()
+        {
+            return await _todoService.GetAllByUser();
         }
          
         [HttpPut("{id}/name")]
