@@ -199,6 +199,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -251,12 +254,39 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Attachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Attachment");
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Business", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ColorCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDefaultFinish")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -299,9 +329,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Card");
                 });
@@ -329,7 +364,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.Property<int>("TagId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CardId1")
+                        .HasColumnType("int");
+
                     b.HasKey("CardId", "TagId");
+
+                    b.HasIndex("CardId1");
 
                     b.HasIndex("TagId");
 
@@ -368,12 +408,30 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.ToTable("Comment");
                 });
 
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CommentAttachment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AttachmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CommentId", "AttachmentId");
+
+                    b.HasIndex("AttachmentId");
+
+                    b.ToTable("CommentAttachment");
+                });
+
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ColorCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -431,6 +489,9 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -520,10 +581,14 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.Card", b =>
                 {
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Business", "Business")
-                        .WithMany("Cards")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CardAssign", b =>
@@ -549,6 +614,10 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("CardId1");
+
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Tag", "Tag")
                         .WithMany()
                         .HasForeignKey("TagId")
@@ -561,6 +630,21 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Card", "Card")
                         .WithMany()
                         .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("_468_.Net_Fundamentals.Domain.Entities.CommentAttachment", b =>
+                {
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Attachment", "Attachment")
+                        .WithMany()
+                        .HasForeignKey("AttachmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("_468_.Net_Fundamentals.Domain.Entities.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

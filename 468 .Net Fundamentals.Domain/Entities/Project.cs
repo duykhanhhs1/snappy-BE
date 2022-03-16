@@ -11,6 +11,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     {
         [Required]
         public string Name { get; set; }
+        public string ColorCode { get; set; }
 
         [Required]
         [Display(Name = "Created On")]

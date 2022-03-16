@@ -26,6 +26,12 @@ namespace _468_.Net_Fundamentals.Controllers
         public async Task<IActionResult> CurrentUser()
         {
             return await _userService.CurrentUser();
+        }      
+        
+        [HttpPut("current/avatar")]
+        public async Task UpdateAvatar([FromBody] AvatarVM avatar)
+        {
+            await _userService.UpdateAvatar(avatar);
         }
 
         [HttpGet("current")]

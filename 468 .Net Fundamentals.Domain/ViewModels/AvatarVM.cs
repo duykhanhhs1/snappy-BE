@@ -4,9 +4,8 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class TodoCreateVM
+    public class AvatarVM
     {
-        public string Name { get; set; }
-        public string UserId { get; set; }
+        public string Url { get; set; }
     }
 }

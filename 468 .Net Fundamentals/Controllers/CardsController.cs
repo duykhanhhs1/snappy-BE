@@ -75,6 +75,12 @@ namespace _468_.Net_Fundamentals.Controllers
         {
             await _cardService.UpdateDuedate(id, newDuedate);
         }
+        
+        [HttpPut("{id}/charge")]
+        public async Task UpdateCharge(int id, [FromBody] CardChargeVM newUser)
+        {
+            await _cardService.UpdateCharge(id, newUser);
+        }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id)

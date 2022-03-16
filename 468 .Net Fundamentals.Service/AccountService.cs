@@ -130,6 +130,7 @@ namespace _468_.Net_Fundamentals.Service
             {
                 UserName = userRegistration.UserName,
                 Email = userRegistration.Email,
+                FullName = userRegistration.FullName,
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 

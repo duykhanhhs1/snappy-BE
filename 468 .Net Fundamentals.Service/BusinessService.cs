@@ -28,7 +28,10 @@ namespace _468_.Net_Fundamentals.Service
                 var business = new Business
                 {
                     Name = bus.Name,
-                    ProjectId = projectId
+                    ColorCode = bus.ColorCode,
+                    ProjectId = projectId,
+                    IsDefault = bus.IsDefault,
+                    IsDefaultFinish = bus.IsDefaultFinish,
                 };
 
                 await _unitOfWork.Repository<Business>().InsertAsync(business);
@@ -62,6 +65,7 @@ namespace _468_.Net_Fundamentals.Service
                  {
                      Id = b.Id,
                      Name = b.Name,
+                     ColorCode = b.ColorCode,
                      ProjectId = b.ProjectId,     
                  })
                  .ToListAsync();
@@ -85,6 +89,7 @@ namespace _468_.Net_Fundamentals.Service
 
                 var business = await _unitOfWork.Repository<Business>().FindAsync(id);
                 business.Name = bus.Name;
+                business.ColorCode = bus.ColorCode;
 
                 await _unitOfWork.CommitTransaction();
             }

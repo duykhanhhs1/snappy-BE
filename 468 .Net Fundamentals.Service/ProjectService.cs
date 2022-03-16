@@ -27,7 +27,7 @@ namespace _468_.Net_Fundamentals.Service
             _userManager = userManager;
             _currrentUser = currrentUser;
         }
-        private IBusinessService _businessService;
+        private readonly IBusinessService _businessService;
 
         public async Task Create(ProjectCreateVM newProject)
         {
@@ -38,17 +38,39 @@ namespace _468_.Net_Fundamentals.Service
                 var project = new Project
                 {
                     Name = newProject.Name,
+                    ColorCode = newProject.ColorCode,
                     CreatedBy = currentUserId,
                 };
 
                 await _unitOfWork.Repository<Project>().InsertAsync(project);
-                await _unitOfWork.SaveChangesAsync();
-/*                var bus = new BusinessCreateVM
+                var bus = new Business
                 {
                     Name = "Công việc",
+                    ColorCode = "#3BB227",
+                    ProjectId = project.Id,
                 };
-                await _businessService.Create(project.Id, bus) ;*/
-    }
+                await _unitOfWork.Repository<Business>().InsertAsync(bus);
+                var bus1 = new Business
+                {
+                    Name = "Hoàn thành",
+                    ColorCode = "#0AD8AF",
+                    ProjectId = project.Id,
+                    IsDefault = true,
+                    IsDefaultFinish = true,
+                };
+                await _unitOfWork.Repository<Business>().InsertAsync(bus1);
+                var bus2 = new Business
+                {
+                    Name = "Thất bại",
+                    ColorCode = "#F63C3C",
+                    ProjectId = project.Id,
+                    IsDefault = true,
+                    IsDefaultFinish = false,
+                };
+                await _unitOfWork.Repository<Business>().InsertAsync(bus2);
+                await _unitOfWork.SaveChangesAsync();
+
+            }
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransaction();
@@ -65,6 +87,7 @@ namespace _468_.Net_Fundamentals.Service
                 var projectVM = new ProjectVM
                 {
                     Id = project.Id,
+                    ColorCode = project.ColorCode,
                     Name = project.Name,
                     CreatedBy = project.CreatedBy,
                 };
@@ -103,6 +126,7 @@ namespace _468_.Net_Fundamentals.Service
                     {
                         Id = project.Id,
                         Name = project.Name,
+                        ColorCode = project.ColorCode,
                         CreatedBy = project.CreatedBy,
                     })
                     .ToListAsync();

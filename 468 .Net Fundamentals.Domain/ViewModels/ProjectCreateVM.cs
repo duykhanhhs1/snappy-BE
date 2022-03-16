@@ -8,5 +8,6 @@ namespace _468_.Net_Fundamentals.Domain.ViewModels
     {
         
         public string Name { get; set; }
+        public string ColorCode { get; set; }
     }
 }

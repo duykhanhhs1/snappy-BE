@@ -14,6 +14,8 @@ namespace _468_.Net_Fundamentals.Domain.Entities
 
         public int CardId { get; set; }
 
+        public int? ParentId { get; set; }
+
         [ForeignKey("CardId")]
         public virtual Card Card { get; set; }
     }

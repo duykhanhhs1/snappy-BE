@@ -8,7 +8,7 @@ namespace _468_.Net_Fundamentals.Domain.ViewModels
     {
         public int CardId { get; set; }
         public string AssignTo { get; set; }
-        public string UserName { get; set; }
+        public string FullName { get; set; }
         public string Email { get; set; }
         public string ImagePath { get; set; }
     }

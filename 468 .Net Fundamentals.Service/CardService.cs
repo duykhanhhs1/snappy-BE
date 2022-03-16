@@ -20,12 +20,12 @@ namespace _468_.Net_Fundamentals.Service
     public class CardService : RepositoryBase<Card>, ICardService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrrentUser _currrentUser;
+        private readonly ICurrrentUser currentUser;
 
         public CardService(ApplicationDbContext context, IUnitOfWork unitOfWork, ICurrrentUser currrentUser) : base(context)
         {
             _unitOfWork = unitOfWork;
-            _currrentUser = currrentUser;
+            currentUser = currrentUser;
         }
 
 
@@ -38,16 +38,26 @@ namespace _468_.Net_Fundamentals.Service
                 // Hard code for user
                 /*var user = await _unitOfWork.Repository<User>().FindAsync(1);*/
 
-                var card = await _unitOfWork.Repository<Business>()
+                var cardVMs = await _unitOfWork.Repository<Card>()
                     .Query()
-                    .Where(_ => _.Id == busId)
+                    .Where(_ => _.BusinessId == busId)
+                    .OrderBy(_ => _.Index)
+                    .Select(_ =>_.Id)
+                    .ToListAsync();
+
+                var count = cardVMs.Count;
+
+                var card = await _unitOfWork.Repository<Business>()
+                   .Query()
+                   .Where(_ => _.Id == busId)
                     .Select(bus => new Card
                     {
                         Name = task.Name,
+                        UserId = currentUser.Id,
                         Description = task.Description,
                         Duedate = task.Duedate,
                         BusinessId = bus.Id,
-                        Index = 1,
+                        Index = count,
                         Priority = TaskPriority.Normal,
                         CreatedOn = DateTime.Now
                     })
@@ -57,7 +67,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.SaveChangesAsync();
 
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
 
                 var activity = new Activity
                 {
@@ -89,6 +99,7 @@ namespace _468_.Net_Fundamentals.Service
                     {
                         Id = card.Id,
                         Name = card.Name,
+                        UserId = card.UserId,
                         Description = card.Description,
                         Duedate = card.Duedate,
                         Priority = card.Priority,
@@ -96,6 +107,20 @@ namespace _468_.Net_Fundamentals.Service
                         Index = card.Index
                     })
                     .ToListAsync();
+
+                foreach (var _ in cardVMs)
+                {
+                    _.Tags = await _unitOfWork.Repository<CardTag>()
+                 .Query()
+                 .Where(__ => __.CardId == _.Id)
+                 .Select(tag => new TagVM
+                 {
+                     Id = tag.Tag.Id,
+                     ProjectId = tag.Tag.ProjectId,
+                     ColorCode = tag.Tag.ColorCode,
+                     Name = tag.Tag.Name,
+                 }).ToListAsync();
+                }
 
                 return cardVMs;
             }
@@ -113,11 +138,20 @@ namespace _468_.Net_Fundamentals.Service
             {
                 var cardVMs = await _unitOfWork.Repository<Card>()
                     .Query()
+                    .Where(_ => _.UserId == currentUser.Id)
                     .OrderBy(_ => _.Index)
                     .Select(card => new CardVM
                     {
                         Id = card.Id,
                         Name = card.Name,
+                        User = new UserVM
+                        {
+                            Email = card.User.Email,
+                            Id = card.User.Id,
+                            ImagePath = card.User.ImagePath,
+                            UserName = card.User.UserName,
+                            FullName = card.User.FullName
+                        },
                         Description = card.Description,
                         Duedate = card.Duedate,
                         Priority = card.Priority,
@@ -125,6 +159,25 @@ namespace _468_.Net_Fundamentals.Service
                         Index = card.Index
                     })
                     .ToListAsync();
+
+                foreach(var _ in cardVMs)
+                {
+                    _.Tags = await _unitOfWork.Repository<CardTag>()
+                 .Query()
+                 .Where(__ => __.CardId == _.Id)
+                 .Select(tag => new TagVM { 
+                 Id = tag.Tag.Id,
+                 ProjectId = tag.Tag.ProjectId,
+                 ColorCode = tag.Tag.ColorCode,
+                 Name = tag.Tag.Name,
+                 }).ToListAsync();
+                }
+
+                /* await cardVMs.ForEach(async _ => _.TagIds = await _unitOfWork.Repository<CardTag>()
+                 .Query()
+                 .Where(__ => __.CardId == _.Id)
+                 .Select(tag => tag.TagId).ToListAsync()
+                  );*/
 
                 return cardVMs;
             }
@@ -140,20 +193,25 @@ namespace _468_.Net_Fundamentals.Service
         {
             try
             {
-                var cardVM = await _unitOfWork.Repository<Card>()
-                    .Query()
-                    .Where(_ => _.Id == id)
-                    .Select(card => new CardVM
-                    {
-                        Id = card.Id,
-                        Name = card.Name,
-                        Description = card.Description,
-                        Duedate = card.Duedate,
-                        Priority = card.Priority,
-                        BusinessId = card.BusinessId,
-                        Index = card.Index
-
-                    }).FirstOrDefaultAsync();
+                var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+                var cardTags = await _unitOfWork.Repository<CardTag>().Query().Where(_ => _.CardId == id).Select(tag => new TagVM { 
+                 Id = tag.Tag.Id,
+                 ProjectId = tag.Tag.ProjectId,
+                 ColorCode = tag.Tag.ColorCode,
+                 Name = tag.Tag.Name,
+                 }).ToListAsync();
+                var cardVM = new CardVM
+                {
+                    Id = card.Id,
+                    Name = card.Name,
+                    UserId = card.UserId,
+                    Description = card.Description,
+                    Tags = cardTags,
+                    Duedate = card.Duedate,
+                    Priority = card.Priority,
+                    BusinessId = card.BusinessId,
+                    Index = card.Index
+                };
 
                 return cardVM;
             }
@@ -172,7 +230,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.BeginTransaction();
 
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -209,9 +267,10 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.BeginTransaction();
 
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+                var preCard = await _unitOfWork.Repository<Card>().FindAsync(data.PreviousId);
                 // To get business name
                 var business = await _unitOfWork.Repository<Business>().FindAsync(data.BusId);
 
@@ -240,6 +299,9 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.Repository<Activity>().InsertAsync(activity);
 
                 // Movement
+                preCard.BusinessId = card.BusinessId;
+                preCard.Index = card.Index;
+                //
                 card.BusinessId = data.BusId;
                 card.Index = data.Index;
 
@@ -262,7 +324,7 @@ namespace _468_.Net_Fundamentals.Service
                 await _unitOfWork.BeginTransaction();
 
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -300,7 +362,7 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -341,7 +403,7 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
 
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
@@ -378,7 +440,7 @@ namespace _468_.Net_Fundamentals.Service
             {
                 await _unitOfWork.BeginTransaction();
                 // User action 
-                var currentUserId = _currrentUser?.Id;
+                var currentUserId = currentUser?.Id;
                 var card = await _unitOfWork.Repository<Card>().FindAsync(id);
 
 
@@ -396,6 +458,39 @@ namespace _468_.Net_Fundamentals.Service
 
                 // Update duedate
                 card.Duedate = DateTime.Parse(newDuedate.Duedate);
+
+                await _unitOfWork.Repository<Activity>().InsertAsync(activity);
+                await _unitOfWork.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                await _unitOfWork.RollbackTransaction();
+                throw e;
+            }
+
+        }
+        public async Task UpdateCharge(int id, [FromBody] CardChargeVM newUser)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+                // User action 
+                var currentUserId = currentUser?.Id;
+                var card = await _unitOfWork.Repository<Card>().FindAsync(id);
+
+
+                // Save history
+                var activity = new Activity
+                {
+                    CardId = card.Id,
+                    UserId = currentUserId,
+                    Action = AcctionEnumType.AssignUser,
+                    PreviousValue = card.UserId,
+                    CurrentValue = newUser.UserId,
+                    OnDate = DateTime.Now
+                };
+
+                card.UserId = newUser.UserId;
 
                 await _unitOfWork.Repository<Activity>().InsertAsync(activity);
                 await _unitOfWork.CommitTransaction();

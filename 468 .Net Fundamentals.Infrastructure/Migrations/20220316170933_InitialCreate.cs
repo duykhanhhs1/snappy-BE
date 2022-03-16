@@ -26,6 +26,20 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Attachment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachment", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -73,6 +87,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     ImagePath = table.Column<string>(nullable: true),
+                    FullName = table.Column<string>(nullable: true),
                     Role = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -108,6 +123,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
+                    ColorCode = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: false)
                 },
@@ -214,7 +230,10 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    ProjectId = table.Column<int>(nullable: false)
+                    ColorCode = table.Column<string>(nullable: true),
+                    ProjectId = table.Column<int>(nullable: false),
+                    IsDefault = table.Column<bool>(nullable: false),
+                    IsDefaultFinish = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -260,6 +279,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                     Description = table.Column<string>(nullable: true),
                     Priority = table.Column<int>(nullable: false),
                     BusinessId = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
                     Index = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
@@ -271,6 +291,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         principalTable: "Business",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Card_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -301,7 +327,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 columns: table => new
                 {
                     CardId = table.Column<int>(nullable: false),
-                    TagId = table.Column<int>(nullable: false)
+                    TagId = table.Column<int>(nullable: false),
+                    CardId1 = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -311,6 +338,12 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         column: x => x.CardId,
                         principalTable: "Card",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CardTag_Card_CardId1",
+                        column: x => x.CardId1,
+                        principalTable: "Card",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CardTag_Tag_TagId",
                         column: x => x.TagId,
@@ -351,7 +384,8 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     IsCompleted = table.Column<bool>(nullable: false),
-                    CardId = table.Column<int>(nullable: false)
+                    CardId = table.Column<int>(nullable: false),
+                    ParentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -360,6 +394,29 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                         name: "FK_Todo_Card_CardId",
                         column: x => x.CardId,
                         principalTable: "Card",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommentAttachment",
+                columns: table => new
+                {
+                    CommentId = table.Column<int>(nullable: false),
+                    AttachmentId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentAttachment", x => new { x.CommentId, x.AttachmentId });
+                    table.ForeignKey(
+                        name: "FK_CommentAttachment_Attachment_AttachmentId",
+                        column: x => x.AttachmentId,
+                        principalTable: "Attachment",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CommentAttachment_Comment_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -375,9 +432,19 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 column: "BusinessId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Card_UserId",
+                table: "Card",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CardAssign_AssignTo",
                 table: "CardAssign",
                 column: "AssignTo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CardTag_CardId1",
+                table: "CardTag",
+                column: "CardId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardTag_TagId",
@@ -388,6 +455,11 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "IX_Comment_CardId",
                 table: "Comment",
                 column: "CardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentAttachment_AttachmentId",
+                table: "CommentAttachment",
+                column: "AttachmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Project_CreatedBy",
@@ -456,7 +528,7 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "CardTag");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "CommentAttachment");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
@@ -483,10 +555,16 @@ namespace _468_.Net_Fundamentals.Infrastructure.Migrations
                 name: "Tag");
 
             migrationBuilder.DropTable(
-                name: "Card");
+                name: "Attachment");
+
+            migrationBuilder.DropTable(
+                name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Card");
 
             migrationBuilder.DropTable(
                 name: "Business");

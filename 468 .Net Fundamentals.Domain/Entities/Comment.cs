@@ -21,7 +21,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? UpdatedOn { get; set; }
 
-        public string? Content { get; set; }
+        public string Content { get; set; }
 
         public int CardId { get; set; }
 

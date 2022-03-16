@@ -10,11 +10,12 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     {
         public int CardId { get; set; }
 
-
         public int TagId { get; set; }
 
+        [ForeignKey("TagId")]
         public virtual Tag Tag { get; set; }
 
+        [ForeignKey("CardId")]
         public virtual Card Card { get; set; }
 
     }

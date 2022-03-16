@@ -27,7 +27,7 @@ namespace _468_.Net_Fundamentals.Service
             _currrentUser = currrentUser;
         }
 
-        public async Task<int?> Create(int cardId, CommentCreateVM newComment)
+        public async Task<int> Create(int cardId, CommentCreateVM newComment)
         {
             try
             {
@@ -43,6 +43,23 @@ namespace _468_.Net_Fundamentals.Service
                 };
 
                 await _unitOfWork.Repository<Comment>().InsertAsync(comment);
+
+                foreach(var attach in newComment.attachments)
+                {
+                    var attachment = new Attachment
+                    {
+                        Url = attach.Url,
+                        Name = attach.Name,
+                    };
+                    await _unitOfWork.Repository<Attachment>().InsertAsync(attachment);
+                    var comAttachment = new CommentAttachment
+                    {
+                        CommentId = comment.Id,
+                        AttachmentId = attachment.Id,
+                    };
+                    await _unitOfWork.Repository<CommentAttachment>().InsertAsync(comAttachment);
+                }
+
                 await _unitOfWork.SaveChangesAsync();
 
                 return comment.Id;
@@ -58,7 +75,7 @@ namespace _468_.Net_Fundamentals.Service
         {
             var commentVMs = await _unitOfWork.Repository<Comment>()
                 .Query()
-                .Where(_ => _.CardId == cardId && _.ParentId == null)
+                .Where(_ => _.CardId == cardId)
                 .Select(comment => new CommentVM
                 {
                     Id = comment.Id,
@@ -68,6 +85,17 @@ namespace _468_.Net_Fundamentals.Service
                     CardId = comment.CardId,
                     CreatedOn = comment.CreatedOn,
                 }).ToListAsync();
+            foreach (var _ in commentVMs)
+            {
+                _.Attachments = await _unitOfWork.Repository<CommentAttachment>()
+             .Query()
+             .Where(__ => __.CommentId == _.Id)
+             .Select(attach => new AttachmentVM
+             {
+                 Name = attach.Attachment.Name,
+                 Url = attach.Attachment.Url,
+             }).ToListAsync();
+            }
             return commentVMs;
         }
 

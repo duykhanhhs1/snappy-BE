@@ -82,7 +82,8 @@ namespace _468_.Net_Fundamentals.Service
                     Id = todo.Id,
                     IsCompleted = todo.IsCompleted,
                     Name = todo.Name,
-                    CardId = todo.CardId
+                    CardId = todo.CardId,
+                    CardName = todo.Card.Name,
                 }).ToListAsync();
 
             /*var todos = from todo in alltodo where todo.CardId == cardId select todo;

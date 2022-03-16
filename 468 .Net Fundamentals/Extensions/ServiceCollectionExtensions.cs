@@ -54,7 +54,6 @@ namespace _468_.Net_Fundamentals.Extensions
                 .AddScoped<IActivityService, ActivityService>()
                 .AddScoped<IAccountService, AccountService>()
                 .AddScoped<ICommentService, CommentService>();
-
         }
 
         public static IServiceCollection AddCurrentUser(this IServiceCollection services)

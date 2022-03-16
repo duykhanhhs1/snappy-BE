@@ -22,6 +22,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
         public Task UpdatePriority(int id, TaskPriority newPriority);
         public Task UpdateDescription(int id, CardDescriptionVM newDescription);
         public Task UpdateDuedate(int id, CardDueDateVM newDuedate);
+        public Task UpdateCharge(int id, CardChargeVM newUser);
         public Task<IList<CardVM>> GetAllByUser();
     }
 }

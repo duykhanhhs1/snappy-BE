@@ -20,11 +20,15 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Duedate { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         public TaskPriority Priority { get; set; }
 
         public int BusinessId { get; set; }
+        public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual AppUser User { get; set; }
 
         public float Index { get; set; }
 
@@ -32,7 +36,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
         [ForeignKey("BusinessId")]
         public virtual Business Business { get; set; }
 
-        /*public virtual IList<Todo> Todos { get; set; }*/
-   
+        public virtual ICollection<CardTag> Tags { get; set; }
+
     }
 }

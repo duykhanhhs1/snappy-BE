@@ -8,7 +8,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
 {
     public interface ICommentService
     {
-        public Task<int?> Create(int cardId, CommentCreateVM comment);
+        public Task<int> Create(int cardId, CommentCreateVM comment);
         public Task Update(int id, CommentCreateVM comment);
         public Task Delete(int id);
 

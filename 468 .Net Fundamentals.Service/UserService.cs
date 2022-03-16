@@ -51,6 +51,23 @@ namespace _468_.Net_Fundamentals.Service
                 throw e;
             }
         }
+        public async Task UpdateAvatar(AvatarVM avatar)
+        {
+            try
+            {
+                var user = await _unitOfWork.Repository<AppUser>().FindAsync(_currrentUser.Id);
+
+                user.ImagePath = avatar.Url;
+
+                await _unitOfWork.CommitTransaction();
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
 
 
         public async Task<UserVM> GetCurrentUser()
@@ -62,7 +79,7 @@ namespace _468_.Net_Fundamentals.Service
               .Select(u => new UserVM
               {
                   Id = u.Id,
-                  UserName = u.UserName,
+                  FullName = u.FullName,
                   Email = u.Email,
                   ImagePath = u.ImagePath
               }).FirstOrDefaultAsync();
@@ -117,7 +134,7 @@ namespace _468_.Net_Fundamentals.Service
              {
                  CardId = c.CardId,
                  AssignTo = c.AssignTo,
-                 UserName = c.User.UserName,
+                 FullName = c.User.UserName,
                  Email = c.User.Email,
                  ImagePath = c.User.ImagePath
              }).ToListAsync();
@@ -135,6 +152,7 @@ namespace _468_.Net_Fundamentals.Service
                   Id = u.Id,
                   UserName = u.UserName,
                   Email = u.Email,
+                  FullName = u.FullName,
                   ImagePath = u.ImagePath
               }).FirstOrDefaultAsync();
 
@@ -150,6 +168,7 @@ namespace _468_.Net_Fundamentals.Service
                   Id = u.Id,
                   UserName = u.UserName,
                   Email = u.Email,
+                  FullName = u.FullName,
                   ImagePath = u.ImagePath
               }).ToListAsync();
 

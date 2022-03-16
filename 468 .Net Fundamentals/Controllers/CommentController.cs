@@ -22,9 +22,9 @@ namespace _468_.Net_Fundamentals.Controllers
         }
 
         [HttpPost("/api/card/{cardId}/comments")]
-        public async Task Create(int cardId, [FromBody] CommentCreateVM comment)
+        public async Task<int> Create(int cardId, [FromBody] CommentCreateVM comment)
         {
-            await _commentService.Create(cardId, comment);
+            return await _commentService.Create(cardId, comment);
         }
 
         [HttpGet("/api/card/{cardId}/comments")]

@@ -31,6 +31,19 @@ namespace _468_.Net_Fundamentals.Infrastructure
 
 
 
+                // CmtAttachment
+                builder.Entity<CommentAttachment>().HasKey(ca => new { ca.CommentId, ca.AttachmentId });
+                builder.Entity<CommentAttachment>()
+                    .HasOne(ca => ca.Comment)
+                    .WithMany()
+                    .HasForeignKey(ca => ca.CommentId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                builder.Entity<CommentAttachment>()
+                    .HasOne(ca => ca.Attachment)
+                    .WithMany()
+                    .HasForeignKey(ca => ca.AttachmentId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
                 // CardAssign
                 builder.Entity<CardAssign>().HasKey(ca => new { ca.CardId, ca.AssignTo });
                 builder.Entity<CardAssign>()
@@ -64,6 +77,8 @@ namespace _468_.Net_Fundamentals.Infrastructure
 
 
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
+        public DbSet<CommentAttachment> CommentAttachments { get; set; }
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<Business> Businesses { get; set; }

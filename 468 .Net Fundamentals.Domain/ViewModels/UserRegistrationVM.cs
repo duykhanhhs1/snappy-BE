@@ -7,8 +7,11 @@ namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
     public class UserRegistrationVM
     {
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "UserName is required")]
         public string UserName { get; set; }
+
+        [Required(ErrorMessage = "FullName is required.")]        
+        public string FullName { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
         public string Email { get; set; }

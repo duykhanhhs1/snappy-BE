@@ -11,6 +11,7 @@ namespace _468_.Net_Fundamentals.Domain.Entities
     public class AppUser : IdentityUser
     {
         public string ImagePath { get; set; }
+        public string FullName { get; set; }
 
         [Required]
         public Role Role { get; set; }

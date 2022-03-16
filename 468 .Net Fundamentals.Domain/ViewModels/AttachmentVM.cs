@@ -4,9 +4,9 @@ using System.Text;
 
 namespace _468_.Net_Fundamentals.Domain.ViewModels
 {
-    public class TodoCreateVM
+    public class AttachmentVM
     {
+        public string Url { get; set; }
         public string Name { get; set; }
-        public string UserId { get; set; }
     }
 }

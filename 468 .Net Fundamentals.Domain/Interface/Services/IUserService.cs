@@ -23,6 +23,7 @@ namespace _468_.Net_Fundamentals.Domain.Interface.Services
         public Task<IList<CardAssignVM>> GetAllCardAssign(int cardId);
 
         public Task DeleteCardAssign(int cardId, string userId);
+        public Task UpdateAvatar(AvatarVM avatar);
 
 
         /*public Task Update(int id, string name);
